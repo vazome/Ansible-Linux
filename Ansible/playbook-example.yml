@@ -1,0 +1,24 @@
+#I have a script called NetworkManagerCheck it checks Network Manager service status and initscripts installation status on redhat based systems
+#This playbook can remotely deploy the script and collect the output
+- name: Transfer Network Manager check-up script.
+  hosts: all
+  remote_user: user
+  tasks: 
+  - name: Start
+    block:
+      - name: Transfer From Ansible Server to Host
+        copy: src=/location/NetworkManagerCheck.sh dest=/home/user/ mode=0770
+
+      - name: Execute
+        command: sh /home/user/NetworkManagerCheck.sh
+        register: script_output
+        
+      - name: Remove script (delete file)
+        ansible.builtin.file:
+          path: /home/user/NetworkManagerCheck.sh
+          state: absent
+
+      - name: Show Log
+        debug: msg="{{ script_output.stdout_lines }}"
+    when: ansible_os_family == "RedHat"
+    become: true
