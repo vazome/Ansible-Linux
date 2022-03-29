@@ -7,11 +7,11 @@
   - name: RedHat
     block:
       - name: Get RedHat Repo Enabled
-        shell: yum repolist enabled
+        shell: yum repolist enabled | awk '{print $1}'
         register: redhat_repos_enabled
 
       - name: Get RedHat Repo Disabled
-        shell: yum repolist disabled
+        shell: yum repolist disabled | awk '{print $1}'
         register: redhat_repos_disabled
 
       - name: List RedHat Enabled
